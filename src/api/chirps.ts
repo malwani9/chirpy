@@ -1,4 +1,4 @@
-import type {Request, Response} from "express";
+import type {NextFunction, Request, Response} from "express";
 import { JSONResponse, ResponseData } from "./json.js";
 
 export async function handlerValidateChirp(req: Request, res: Response) {
@@ -16,9 +16,7 @@ export async function handlerValidateChirp(req: Request, res: Response) {
     };
 
     if  (params.body.length > 140) {
-        respBody.error = "Chirp is too long"
-        JSONResponse(res, 400, respBody);
-        return;
+        throw new Error("Chirp is too long");
     }
     
 
