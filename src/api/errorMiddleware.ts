@@ -38,7 +38,7 @@ class ChirpyError extends Error {
     this.statusCode = statusCode;
   } 
 }
-class NotFoundError extends ChirpyError {
+export class NotFoundError extends ChirpyError {
   constructor(message: string) {
     super(message, 404);
   }
@@ -49,13 +49,13 @@ export class Forbidden extends ChirpyError {
     super(message, 403);
   }
 }
-class PaymentRequired extends ChirpyError {
+export class PaymentRequired extends ChirpyError {
   constructor(message: string) {
     super(message, 402);
   }
 }
 
-class Unauthorized extends ChirpyError {
+export class Unauthorized extends ChirpyError {
   constructor(message: string) {
     super(message, 401);
   }
