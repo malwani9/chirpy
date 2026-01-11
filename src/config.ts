@@ -1,7 +1,7 @@
 import { NotFoundError } from "./api/errorMiddleware.js"
 import type { MigrationConfig } from "drizzle-orm/migrator";
 
-const { loadEnvFile } = require('node:process');
+import { loadEnvFile } from 'node:process'
 loadEnvFile();
 
 type Config = {
@@ -12,6 +12,7 @@ type Config = {
 type APIConfig = {
     fileserverHits: number;
     port: number;
+    platform: string;
 };
 
 const migrationConfig: MigrationConfig = {
@@ -27,6 +28,7 @@ export const config: Config = {
     api: {
         fileserverHits: 0,
         port: Number(getEnv("PORT")),
+        platform: getEnv("PLATFORM"),
     },
     db: {
         url: getEnv("DB_URL"),

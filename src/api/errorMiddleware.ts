@@ -13,13 +13,13 @@ export function errorMiddleware(
   let code = 500;
   let message = "Internal Server Errors";
 
-  if (err instanceof BadRequest) {
+  if (err instanceof BadRequestError) {
     errorResponse(res, err.statusCode, err.message);
-  } else if (err instanceof Unauthorized) {
+  } else if (err instanceof UnauthorizedError) {
     errorResponse(res, err.statusCode, err.message);
-  } else if (err instanceof PaymentRequired) {
+  } else if (err instanceof PaymentRequiredError) {
     errorResponse(res, err.statusCode, err.message);
-  } else if (err instanceof Forbidden) {
+  } else if (err instanceof ForbiddenError) {
     console.log("forbidden")
     errorResponse(res, err.statusCode, err.message);
   } else if (err instanceof NotFoundError) {
@@ -44,24 +44,24 @@ export class NotFoundError extends ChirpyError {
   }
 }
 
-export class Forbidden extends ChirpyError {
+export class ForbiddenError extends ChirpyError {
   constructor(message: string) {
     super(message, 403);
   }
 }
-export class PaymentRequired extends ChirpyError {
+export class PaymentRequiredError extends ChirpyError {
   constructor(message: string) {
     super(message, 402);
   }
 }
 
-export class Unauthorized extends ChirpyError {
+export class UnauthorizedError extends ChirpyError {
   constructor(message: string) {
     super(message, 401);
   }
 }
 
-export class BadRequest extends ChirpyError {
+export class BadRequestError extends ChirpyError {
   constructor(message: string) {
     super(message, 400);
   }

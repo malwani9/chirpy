@@ -4,6 +4,7 @@ export type ResponseData = {
     error?: string;
     valid?: boolean;
     cleanedBody?: string;
+    body?: object;
 };
 
 export function errorResponse(res: Response, code: number, message: string) {
