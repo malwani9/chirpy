@@ -5,10 +5,17 @@ import { middlewareMetricsInc } from "./api/middlewareMetricsInc.js";
 import { handlerHits } from "./api/hits.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerValidateChirp } from "./api/chirps.js";
-import { errorMiddleware } from "./api/errorMiddleware.js" 
+import { errorMiddleware } from "./api/errorMiddleware.js" ;
+import postgres from "postgres";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { config } from "./config.js";
+
+
+const migrationClient = postgres(config.db.url, { max: 1 });
+await migrate(drizzle(migrationClient), config.db.migrationConfig);
 
 const app = express();
-const PORT = 8080;
 
 app.use(middlewareLogResponses);
 app.use(express.json());
@@ -30,6 +37,6 @@ app.post("/api/validate_chirp",  (req, res, next) => {
 
 app.use(errorMiddleware as unknown as express.ErrorRequestHandler);
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(config.api.port, () => {
+    console.log(`Server is running at http://localhost:${config.api.port}`);
 });

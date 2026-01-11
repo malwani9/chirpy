@@ -7,7 +7,7 @@ const postgres = process.env.connection_string!;
 
 export default defineConfig({
   schema: "./src/db/schema.ts",
-  out: "./src/db/migrations.ts",
+  out: "./src/db/migrations",
   dialect: "postgresql",
   dbCredentials: {
     url: postgres,
