@@ -1,5 +1,5 @@
 import type { Request, Response} from "express";
-import { JSONResponse, ResponseData } from "./json.js";
+import { JSONResponse } from "./json.js";
 import { createUser } from "../db/queries/users.js";
 import { NotFoundError, BadRequestError } from "./errorMiddleware.js";
 
@@ -12,14 +12,16 @@ export async function createUserAsync(req: Request, res: Response) {
     if (!params.email) {
         throw new BadRequestError("Missing required fields");
     }
-    const result = await createUser({ email: params.email });
+    const user = await createUser({ email: params.email });
 
-    if (!result) {
+    if (!user) {
         throw new NotFoundError("Creation result not found");
     }
 
-    let respBody: ResponseData = {};
-    respBody.body = result;
-
-    JSONResponse(res, 201, respBody.body);
+    JSONResponse(res, 201, {
+        id: user.id,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+    });
 }

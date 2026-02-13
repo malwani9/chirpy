@@ -1,8 +1,10 @@
 import type { Request, Response} from "express";
-import { JSONResponse, ResponseData } from "./json.js";
+import { JSONResponse } from "./json.js";
 import { BadRequestError } from "./errorMiddleware.js"
+import { createChirp } from "../db/queries/chirps.js";
+import { createUser } from "../db/queries/users.js";
 
-export async function handlerValidateChirp(req: Request, res: Response) {
+export async function handlerChirps(req: Request, res: Response) {
     type Chirp = {
         body: string;
     };
@@ -10,11 +12,6 @@ export async function handlerValidateChirp(req: Request, res: Response) {
     const profane = ["kerfuffle", "sharbert", "fornax"];
     const params: Chirp = req.body;
 
-    let respBody: ResponseData = {
-        error: "",
-        valid: false,
-        cleanedBody: "",
-    };
 
     if  (params.body.length > 140) {
         throw new BadRequestError("Chirp is too long. Max length is 140");
@@ -29,7 +26,15 @@ export async function handlerValidateChirp(req: Request, res: Response) {
         }
     }
 
-    respBody.cleanedBody = request_words.join(" "); 
-    respBody.valid = true;
-    JSONResponse(res, 200, respBody);  
+    const cleaned = request_words.join(" "); 
+
+    const user = await createUser({ email: "saul@bettercall.com" });
+
+    const chirp = await createChirp({ body: cleaned, userId: user.id});
+    const body = chirp.body;
+    const userId = chirp.userId;
+    JSONResponse(res, 200, {
+        body,
+        userId
+    });  
 }
