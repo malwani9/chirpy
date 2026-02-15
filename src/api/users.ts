@@ -6,7 +6,8 @@ import { NotFoundError, BadRequestError } from "./errorMiddleware.js";
 type User = {
     email: string;
 }
-export async function createUserAsync(req: Request, res: Response) {
+export async function handlerUsersCreate(req: Request, res: Response) {
+
     const params : User = req.body;
 
     if (!params.email) {

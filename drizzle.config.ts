@@ -1,15 +1,11 @@
 import { defineConfig } from "drizzle-kit";
-import dotenv from "dotenv";
-
-dotenv.config({ path: "dev.env" });
-
-const postgres = process.env.connection_string!;
+import  { config } from "./src/config.js";
 
 export default defineConfig({
   schema: "./src/db/schema.ts",
   out: "./src/db/migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: postgres,
+    url: config.db.url,
   },
 });

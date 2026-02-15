@@ -4,13 +4,13 @@ import { middlewareLogResponses } from "./api/middlewareLogResponses.js";
 import { middlewareMetricsInc } from "./api/middlewareMetricsInc.js";
 import { handlerHits } from "./api/hits.js";
 import { handlerReset } from "./api/reset.js";
-import { handlerChirps } from "./api/chirps.js";
+import { handlerChirpsCreate } from "./api/chirps.js";
 import { errorMiddleware } from "./api/errorMiddleware.js" ;
 import postgres from "postgres";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { config } from "./config.js";
-import { createUserAsync } from "./api/users.js";
+import { handlerUsersCreate } from "./api/users.js";
 
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -33,11 +33,11 @@ app.post("/admin/reset", (req, res, next) => {
     Promise.resolve(handlerReset(req, res)).catch(next); 
 });
 app.post("/api/chirps",  (req, res, next) => {
-    Promise.resolve(handlerChirps(req, res)).catch(next); 
+    Promise.resolve(handlerChirpsCreate(req, res)).catch(next); 
 });
 
 app.post("/api/users",  (req, res, next) => {
-    Promise.resolve(createUserAsync(req, res)).catch(next); 
+    Promise.resolve(handlerUsersCreate(req, res)).catch(next); 
 });
 
 app.use(errorMiddleware as unknown as express.ErrorRequestHandler);
