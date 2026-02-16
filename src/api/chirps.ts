@@ -1,7 +1,8 @@
 import type { Request, Response} from "express";
 import { JSONResponse } from "./json.js";
 import { BadRequestError, NotFoundError } from "./errorMiddleware.js"
-import { createChirp } from "../db/queries/chirps.js";
+import { createChirp, getAllChirps } from "../db/queries/chirps.js";
+import { json } from "stream/consumers";
 
 type Chirp = {
         body: string;
@@ -31,6 +32,15 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
     
     JSONResponse(res, 201, chirp);  
     
+}
+
+export async function handlerAllChirps(_: Request, res: Response) {
+    const chirps: Chirp[] = await getAllChirps();
+    if (chirps.length === 0 || !chirps) {
+        throw new NotFoundError("Retreive result not found");
+    }
+
+    JSONResponse(res, 200, chirps);
 }
 
 function validateChirp(body: string) {
