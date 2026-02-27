@@ -5,9 +5,11 @@ export const users = pgTable("users", {
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
     email: varchar("email", { length: 256 }).unique().notNull(),
+    hashed_password: varchar("hashed_password" ,{ length: 256 }).default("unset").notNull()
 });
 
 export type NewUser = typeof users.$inferInsert;
+export type UserResponse = Omit<NewUser, "hashed_password">;
 
 export const chirps = pgTable("chirps", {
     id: uuid("id").primaryKey().defaultRandom(),

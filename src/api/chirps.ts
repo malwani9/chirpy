@@ -2,18 +2,15 @@ import { response, type Request, type Response} from "express";
 import { JSONResponse } from "./json.js";
 import { BadRequestError, NotFoundError } from "./errorMiddleware.js"
 import { createChirp, getAllChirps, getChirpById } from "../db/queries/chirps.js";
-import { json } from "stream/consumers";
-import { request } from "http";
-import { nextTick } from "process";
 
-type Chirp = {
+type parameters = {
         body: string;
         userId: string;
 };
 
 export async function handlerChirpsCreate(req: Request, res: Response) {
 
-    const params: Chirp = req.body;
+    const params: parameters = req.body;
 
     if (!params.body || !params.userId) {
         throw new BadRequestError("Missing required fields");
@@ -40,7 +37,7 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
 }
 
 export async function handlerAllChirps(_: Request, res: Response) {
-    const chirps: Chirp[] = await getAllChirps();
+    const chirps: parameters[] = await getAllChirps();
     if (chirps.length === 0 || !chirps) {
         throw new NotFoundError("Retreive result not found");
     }
