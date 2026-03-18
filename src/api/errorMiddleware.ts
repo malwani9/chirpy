@@ -15,7 +15,7 @@ export function errorMiddleware(
 
   if (err instanceof BadRequestError) {
     errorResponse(res, err.statusCode, err.message);
-  } else if (err instanceof UnauthorizedError) {
+  } else if (err instanceof UserNotAuthenticatedError) {
     errorResponse(res, err.statusCode, err.message);
   } else if (err instanceof PaymentRequiredError) {
     errorResponse(res, err.statusCode, err.message);
@@ -55,7 +55,7 @@ export class PaymentRequiredError extends ChirpyError {
   }
 }
 
-export class UnauthorizedError extends ChirpyError {
+export class UserNotAuthenticatedError extends ChirpyError {
   constructor(message: string) {
     super(message, 401);
   }
