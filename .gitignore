@@ -18,4 +18,5 @@ yarn-debug.log
 # Requestes
 *.http
 
+# env
 *.env

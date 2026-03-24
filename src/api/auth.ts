@@ -1,14 +1,18 @@
 import type { Request, Response} from "express";
 import { getUserByEmail } from "../db/queries/users.js";
 import { BadRequestError, UserNotAuthenticatedError } from "./errorMiddleware.js";
-import { checkPasswordHash } from "../auth.js";
+import { checkPasswordHash, makeJWT } from "../auth.js";
 import { JSONResponse } from "./json.js";
 import { UserResponse } from "../db/schema.js";
+import { config } from "../config.js";
 
 type parameters = {
     password: string;
     email: string;
+    expiresInSeconds?: number;
 }
+
+type LoginResponse = UserResponse & { token: string;}
 
 export async function handlerLogin(req: Request, res: Response) {
 
@@ -28,10 +32,18 @@ export async function handlerLogin(req: Request, res: Response) {
         throw new UserNotAuthenticatedError("incorrect email or password");
     }
     
+    let duration = config.jwt.defaultDuration;
+    if (params.expiresInSeconds && (params.expiresInSeconds < config.jwt.defaultDuration)) {
+        duration = params.expiresInSeconds;
+    }
+
+    const token = makeJWT(user.id, duration, config.jwt.secret);
+
     JSONResponse(res, 200, {
         id: user.id,
-        email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-    } satisfies UserResponse);
+        email: user.email,
+        token: token,
+    } satisfies LoginResponse);
 }

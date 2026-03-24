@@ -1,24 +1,29 @@
-import { response, type Request, type Response} from "express";
+import { type Request, type Response} from "express";
 import { JSONResponse } from "./json.js";
 import { BadRequestError, NotFoundError } from "./errorMiddleware.js"
 import { createChirp, getAllChirps, getChirpById } from "../db/queries/chirps.js";
+import { getBearerToken, validateJWT } from "../auth.js";
+import { config } from "../config.js";
 
 type parameters = {
         body: string;
-        userId: string;
 };
 
 export async function handlerChirpsCreate(req: Request, res: Response) {
 
     const params: parameters = req.body;
 
-    if (!params.body || !params.userId) {
+    if (!params.body) {
         throw new BadRequestError("Missing required fields");
     }
 
+    const token = getBearerToken(req);
+
+    const userID = validateJWT(token, config.jwt.secret);
+
     const cleaned = validateChirp(params.body);
 
-    const result = await createChirp({ body: cleaned, userId: params.userId});
+    const result = await createChirp({ body: cleaned, userId: userID});
     if (!result) {
         throw new NotFoundError("Creation result not found");
     }
@@ -28,7 +33,7 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
         createdAt: result.createdAt,
         updatedAt: result.updatedAt,
         body: result.body,
-        userId: result.userId,
+        userId: userID,
     };
 
     

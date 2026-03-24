@@ -7,6 +7,7 @@ loadEnvFile();
 type Config = {
     api: APIConfig;
     db: DBConfig;
+    jwt: JWTConfig;
 };
 
 type APIConfig = {
@@ -24,6 +25,12 @@ type DBConfig = {
     migrationConfig: MigrationConfig;
 }
 
+type JWTConfig = {
+  defaultDuration: number;
+  secret: string;
+  issuer: string;
+};
+
 export const config: Config = {
     api: {
         fileserverHits: 0,
@@ -33,6 +40,11 @@ export const config: Config = {
     db: {
         url: getEnv("DB_URL"),
         migrationConfig,
+    },
+    jwt: {
+        defaultDuration: 60 * 60,
+        secret: getEnv("JWT_SECRET"),
+        issuer: "chirpy",
     }
 };
 
