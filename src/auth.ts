@@ -2,6 +2,7 @@ import argon2 from "argon2";
 import { BadRequestError, NotFoundError, UserNotAuthenticatedError } from "./api/errorMiddleware.js";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import type { Request} from "express";
+import crypto from "crypto";
 
 const TOKEN_ISSUER = "chirpy";
 
@@ -70,4 +71,8 @@ export function extractBearerToken(header: string) {
     }
 
     return splitAuth[1];
+}
+
+export function makeRefreshToken(): string {
+    return crypto.randomBytes(32).toString('hex'); 
 }
