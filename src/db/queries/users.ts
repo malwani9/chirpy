@@ -22,6 +22,15 @@ export async function updateUserById(userId: string, hashedPassword: string, ema
     return result;
 }
 
+export async function upgradeUserMembership(userId: string) {
+    const [result] = await db
+        .update(users)
+        .set({ isChirpyRed: true })
+        .where(eq(users.id, userId))
+        .returning();
+    return result;
+}
+
 export async function reset() {
     await db.delete(users)
 }

@@ -12,6 +12,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import { config } from "./config.js";
 import { handlerUsersCreate, handlerUserUpdate } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
+import { handlerMembershipUpgrade } from "./api/webhooks.js";
 
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -57,6 +58,10 @@ app.post("/api/users",  (req, res, next) => {
 app.put("/api/users",  (req, res, next) => {
     Promise.resolve(handlerUserUpdate(req, res)).catch(next); 
 });
+
+app.post("/api/polka/webhooks", (req, res, next) => {
+    Promise.resolve(handlerMembershipUpgrade(req, res).catch(next));
+})
 
 app.post("/api/login",  (req, res, next) => {
     Promise.resolve(handlerLogin(req, res)).catch(next); 
