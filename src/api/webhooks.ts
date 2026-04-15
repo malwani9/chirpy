@@ -1,5 +1,7 @@
 import type { Request, Response} from "express";
 import { upgradeUserMembership } from "../db/queries/users.js"
+import { getAPIkey } from "../auth.js";
+import { config } from "../config.js";
 
 export async function handlerMembershipUpgrade(req: Request, res: Response) {
     type parameters = {
@@ -7,6 +9,12 @@ export async function handlerMembershipUpgrade(req: Request, res: Response) {
         data: {
             userId: string;
         }
+    }
+
+    const requestApiKey = getAPIkey(req);
+    if (requestApiKey !== config.api.polkaApiKey) {
+        res.status(401).send();
+        return;
     }
 
     const params: parameters = req.body;

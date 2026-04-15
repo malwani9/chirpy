@@ -76,3 +76,17 @@ export function extractBearerToken(header: string) {
 export function makeRefreshToken(): string {
     return crypto.randomBytes(32).toString('hex'); 
 }
+
+export function getAPIkey(req: Request) {
+    const authField = req.get('Authorization');
+    if (!authField) {
+        throw new UserNotAuthenticatedError("Malformed authorization header");
+    }
+    
+    const splitAuth = authField.split(" ");
+    if (splitAuth.length < 2 || splitAuth[0] !== "ApiKey") {
+        throw new UserNotAuthenticatedError("Malformed authorization header");
+    }
+
+    return splitAuth[1];
+}

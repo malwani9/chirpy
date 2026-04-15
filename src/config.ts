@@ -14,6 +14,7 @@ type APIConfig = {
     fileserverHits: number;
     port: number;
     platform: string;
+    polkaApiKey: string;
 };
 
 const migrationConfig: MigrationConfig = {
@@ -37,6 +38,7 @@ export const config: Config = {
         fileserverHits: 0,
         port: Number(getEnv("PORT")),
         platform: getEnv("PLATFORM"),
+        polkaApiKey: getEnv("POLKA_KEY"),
     },
     db: {
         url: getEnv("DB_URL"),
