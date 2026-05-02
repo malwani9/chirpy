@@ -1,7 +1,7 @@
 import { type Request, type Response} from "express";
 import { JSONResponse } from "./json.js";
 import { BadRequestError, ForbiddenError, NotFoundError } from "./errorMiddleware.js"
-import { createChirp, deleteChirpById, getAllChirps, getChirpById } from "../db/queries/chirps.js";
+import { createChirp, deleteChirpById, getAllChirps, getAllChirpsByAuthId, getChirpById } from "../db/queries/chirps.js";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
 
@@ -41,11 +41,22 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
     
 }
 
-export async function handlerAllChirps(_: Request, res: Response) {
-    const chirps: parameters[] = await getAllChirps();
-    if (chirps.length === 0 || !chirps) {
-        throw new NotFoundError("Retreive result not found");
+export async function handlerAllChirps(req: Request, res: Response) {
+    const authorId  = req.query.authorId;
+    let chirps: parameters[];
+    if (typeof authorId === 'string') {
+        chirps = await getAllChirpsByAuthId(authorId);
+        if (chirps.length === 0 || !chirps) {
+            throw new NotFoundError(`Retreive result not found for author '${authorId}'`);
+        }
+
+    } else {
+        chirps = await getAllChirps();
+        if (chirps.length === 0 || !chirps) {
+            throw new NotFoundError("Retreive result not found");
+        }
     }
+
 
     JSONResponse(res, 200, chirps);
 }
