@@ -7,13 +7,11 @@ export async function createChirp(chirp: NewChirp) {
     return result;
 }
 
-export async function getAllChirps() {
-    const result = await db.select().from(chirps).orderBy(chirps.createdAt);
-    return result;
-}
-
-export async function getAllChirpsByAuthId(authId: string) {
-    const result = await db.select().from(chirps).where(eq(chirps.userId, authId)).orderBy(chirps.createdAt);
+export async function getAllChirps(authorId?: string) {
+    const result = await db.select()
+    .from(chirps)
+    .where(authorId ? eq(chirps.userId, authorId) : undefined)
+    .orderBy(chirps.createdAt);
     return result;
 }
 
